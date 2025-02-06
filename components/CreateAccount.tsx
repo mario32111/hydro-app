@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Alert } from 'react-native';
+import { Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import styled from 'styled-components/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
@@ -8,12 +8,12 @@ const CreateAccountContainer = styled.View`
   flex: 1;
   justify-content: center;
   align-items: center;
-  background-color: #f9f9f9; /* Fondo blanco suave */
+  background-color: #f9f9f9;
   padding: 20px;
 `;
 
 const LockIconContainer = styled.View`
-  background-color:rgb(147,194,26); /* Verde claro */
+  background-color: rgb(147, 194, 26);
   width: 50px;
   height: 50px;
   justify-content: center;
@@ -23,10 +23,18 @@ const LockIconContainer = styled.View`
 `;
 
 const Title = styled.Text`
-  font-size: 24px;
+  font-size: 26px;
   font-weight: bold;
-  margin-bottom: 20px;
-  color: #4A4A4A; /* Gris oscuro */
+  margin-bottom: 10px;
+  color: #4a4a4a;
+  text-align: center;
+`;
+
+const Title2 = styled.Text`
+  font-size: 16px;
+  margin-bottom: 15px;
+  color: #4a4a4a;
+  align-self: flex-start;
 `;
 
 const InputContainer = styled.View`
@@ -38,13 +46,20 @@ const Input = styled.TextInput`
   width: 100%;
   height: 50px;
   border-width: 1px;
-  border-color:rgb(147,194,26); /* Verde claro */
+  border-color: rgb(147, 194, 26);
   border-radius: 8px;
   padding: 10px;
   padding-right: 40px;
   margin-bottom: 15px;
-  background-color: #FFFFFF; /* Blanco para el fondo de los inputs */
-  color: #4A4A4A; /* Gris oscuro para el texto */
+  background-color: #ffffff;
+  color: #4a4a4a;
+`;
+
+const ErrorText = styled.Text`
+  color: red;
+  font-size: 12px;
+  margin-bottom: 10px;
+  align-self: flex-start;
 `;
 
 const ToggleButton = styled.TouchableOpacity`
@@ -53,36 +68,47 @@ const ToggleButton = styled.TouchableOpacity`
   top: 15px;
 `;
 
-const Button = styled.TouchableOpacity`
-  background-color:rgb(147,194,26); /* Verde claro */
-  width: 100%;
-  height: 50px;
+const NextButton = styled.TouchableOpacity`
+  background-color: rgb(147, 194, 26);
+  width: 60px;
+  height: 60px;
+  border-radius: 30px;
   justify-content: center;
   align-items: center;
-  border-radius: 8px;
-  margin-bottom: 20px;
-`;
-
-const ButtonText = styled.Text`
-  color: #FFFFFF; /* Blanco para el texto del botón */
-  font-size: 18px;
+  margin-top: 20px;
+  opacity: ${(props) => (props.disabled ? 0.5 : 1)};
 `;
 
 const ButtonCreate = styled.TouchableOpacity`
-  background-color: rgb(255, 255, 255); /* Blanco para el fondo */
-  border-width: 2px; /* Asegúrate de definir el grosor del borde */
-  border-color:rgb(147,194,26); /* Verde claro para el borde */
+  background-color: rgb(255, 255, 255);
+  border-width: 2px;
+  border-color: rgb(147, 194, 26);
   width: 100%;
   height: 50px;
   justify-content: center;
   align-items: center;
   border-radius: 8px;
-  margin-bottom: 20px;
+  margin-top: 20px;
 `;
 
 const ButtonCreateText = styled.Text`
-  color: rgb(147,194,26); /* Color para el texto */
+  color: rgb(147, 194, 26);
   font-size: 18px;
+`;
+
+const ProgressBar = styled.View`
+  width: 100%;
+  height: 5px;
+  background-color: #e0e0e0;
+  margin-bottom: 20px;
+  border-radius: 3px;
+  overflow: hidden;
+`;
+
+const ProgressFill = styled.View`
+  width: 33%;
+  height: 100%;
+  background-color: rgb(147, 194, 26);
 `;
 
 const CreateAccount = () => {
@@ -90,67 +116,82 @@ const CreateAccount = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [emailError, setEmailError] = useState('');
+  const navigation = useNavigation();
 
-  const handleCreateAccount = () => {
-    if (email === '' || password === '' || confirmPassword === '') {
+  const validateEmail = (text) => {
+    setEmail(text);
+    if (!/\S+@\S+\.\S+/.test(text)) {
+      setEmailError('Formato de correo inválido');
+    } else {
+      setEmailError('');
+    }
+  };
+
+  const handleNext = () => {
+    if (!email || !password || !confirmPassword) {
       Alert.alert('Error', 'Por favor, completa todos los campos.');
     } else if (password !== confirmPassword) {
       Alert.alert('Error', 'Las contraseñas no coinciden.');
     } else {
-      Alert.alert('Cuenta creada', `¡Bienvenido, ${email}!`, [
-        { text: 'OK', onPress: () => handleWorkFlow() }
-      ]);
+      navigation.navigate('Bar');
     }
   };
 
-  const navigation = useNavigation();
-
-  const handleWorkFlow = () => {
-    navigation.navigate('Bar'); // Redirige a la pantalla de flujo de trabajo
-  };
-
   return (
-    <CreateAccountContainer>
-      <LockIconContainer>
-        <Icon name="lock" size={24} color="#FFF" />
-      </LockIconContainer>
-      <Title>Crear Cuenta</Title>
-      <Input
-        placeholder="Correo electrónico"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-        autoCapitalize="none"
-        placeholderTextColor="#B0B0B0" /* Gris claro para el texto placeholder */
-      />
-      <InputContainer>
-        <Input
-          placeholder="Contraseña"
-          placeholderTextColor="#B0B0B0"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry={!showPassword}
-        />
-        <ToggleButton onPress={() => setShowPassword(!showPassword)}>
-          <Icon name={showPassword ? 'eye-slash' : 'eye'} size={20} color="#FFF" />
-        </ToggleButton>
-      </InputContainer>
-      <InputContainer>
-        <Input
-          placeholder="Confirmar Contraseña"
-          placeholderTextColor="#B0B0B0"
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-          secureTextEntry={!showPassword}
-        />
-      </InputContainer>
-      <Button onPress={handleCreateAccount}>
-        <ButtonText>Crear Cuenta</ButtonText>
-      </Button>
-      <ButtonCreate onPress={() => navigation.navigate('login')}>
-        <ButtonCreateText>¿Ya tienes cuenta? Iniciar sesión</ButtonCreateText>
-      </ButtonCreate>
-    </CreateAccountContainer>
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
+      <CreateAccountContainer>
+        <LockIconContainer>
+          <Icon name="lock" size={24} color="#FFF" />
+        </LockIconContainer>
+        <Title>Crear Cuenta</Title>
+        <ProgressBar>
+          <ProgressFill />
+        </ProgressBar>
+        <Title2>Ingresa tus datos:</Title2>
+        <InputContainer>
+          <Input
+            placeholder="Correo electrónico"
+            value={email}
+            onChangeText={validateEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            placeholderTextColor="#B0B0B0"
+          />
+          {emailError ? <ErrorText>{emailError}</ErrorText> : null}
+        </InputContainer>
+        <InputContainer>
+          <Input
+            placeholder="Contraseña"
+            placeholderTextColor="#B0B0B0"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry={!showPassword}
+          />
+          <ToggleButton onPress={() => setShowPassword(!showPassword)}>
+            <Icon name={showPassword ? 'eye-slash' : 'eye'} size={20} color="#4A4A4A" />
+          </ToggleButton>
+        </InputContainer>
+        <InputContainer>
+          <Input
+            placeholder="Confirmar Contraseña"
+            placeholderTextColor="#B0B0B0"
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            secureTextEntry={!showPassword}
+          />
+        </InputContainer>
+        <NextButton
+          onPress={handleNext}
+          disabled={!!(!email || emailError || !password || !confirmPassword)}
+        >
+          <Icon name="arrow-right" size={24} color="#FFF" />
+        </NextButton>
+        <ButtonCreate onPress={() => navigation.navigate('login')}>
+          <ButtonCreateText>¿Ya tienes cuenta? Iniciar sesión</ButtonCreateText>
+        </ButtonCreate>
+      </CreateAccountContainer>
+    </KeyboardAvoidingView>
   );
 };
 
