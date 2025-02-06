@@ -8,14 +8,32 @@ import HomeScreen from '../components/HomeScreen';
 import ConfigScreen from '../components/ConfigScreen';
 import CreateCamp from '../components/CreateFieldScreen';
 import IrrigationDetailsScreen from '../components/IrrigationsDetailsScreen';
+import AddDetailsAccount from '@/components/AddDetailsAccount';
+import AddMoreDetailsAccount from '@/components/AddMoreDetailsAccount';
 const Stack = createStackNavigator();
 
 const App: React.FC = () => {
   return (
     <Stack.Navigator initialRouteName="loading">
-      <Stack.Screen name="loading" component={LoadingScreen} options={{ headerShown: false}} />
+      <Stack.Screen name="loading" component={LoadingScreen} options={{ headerShown: false }} />
       <Stack.Screen name="login" component={Login} options={{ headerShown: false, gestureEnabled: false, headerLeft: () => null, }} />
       <Stack.Screen name="CreateAccount" component={CreateAccount} options={{ headerShown: false }} />
+      <Stack.Screen
+        name="AddDetailsAccount"
+        component={AddDetailsAccount}
+        options={{
+          headerShown: false,
+          animation: 'none' // Desactiva la animación
+        }}
+      />
+      <Stack.Screen
+        name="AddMoreDetailsAccount"
+        component={AddMoreDetailsAccount}
+        options={{
+          headerShown: false,
+          animation: 'none' // Desactiva la animación
+        }}
+      />
       <Stack.Screen name="Bar" component={AppNavigator} options={{ headerShown: false }} />
       <Stack.Screen name="Inicio" component={HomeScreen} options={{ headerShown: false }} />
       <Stack.Screen name="Config" component={ConfigScreen} options={{ headerShown: false }} />

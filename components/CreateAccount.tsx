@@ -106,7 +106,7 @@ const ProgressBar = styled.View`
 `;
 
 const ProgressFill = styled.View`
-  width: 33%;
+  width: 1%;
   height: 100%;
   background-color: rgb(147, 194, 26);
 `;
@@ -116,6 +116,8 @@ const CreateAccount = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [showPassword2, setShowPassword2] = useState(false);
+
   const [emailError, setEmailError] = useState('');
   const navigation = useNavigation();
 
@@ -134,7 +136,7 @@ const CreateAccount = () => {
     } else if (password !== confirmPassword) {
       Alert.alert('Error', 'Las contraseñas no coinciden.');
     } else {
-      navigation.navigate('Bar');
+      navigation.navigate('AddDetailsAccount');
     }
   };
 
@@ -178,8 +180,11 @@ const CreateAccount = () => {
             placeholderTextColor="#B0B0B0"
             value={confirmPassword}
             onChangeText={setConfirmPassword}
-            secureTextEntry={!showPassword}
+            secureTextEntry={!showPassword2}
           />
+          <ToggleButton onPress={() => setShowPassword2(!showPassword2)}>
+            <Icon name={showPassword2 ? 'eye-slash' : 'eye'} size={20} color="#4A4A4A" />
+          </ToggleButton>
         </InputContainer>
         <NextButton
           onPress={handleNext}
