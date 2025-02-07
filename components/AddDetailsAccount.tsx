@@ -153,7 +153,7 @@ const AddDetailsAccount = () => {
                 <ProgressBar>
                     <ProgressFill width={progress} />
                 </ProgressBar>
-                <Title2>Ingresa tus datos:</Title2>
+                <Title2>Ingresa tus datos personales:</Title2>
                 <InputContainer>
                     <Input
                         placeholder="Nombres"

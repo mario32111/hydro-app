@@ -114,6 +114,7 @@ const ProgressFill = styled.View`
 const CreateAccount = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [phone, setPhone] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showPassword2, setShowPassword2] = useState(false);
@@ -150,7 +151,7 @@ const CreateAccount = () => {
         <ProgressBar>
           <ProgressFill />
         </ProgressBar>
-        <Title2>Ingresa tus datos:</Title2>
+        <Title2>Ingresa los datos de tu cuenta:</Title2>
         <InputContainer>
           <Input
             placeholder="Correo electrónico"
@@ -161,6 +162,16 @@ const CreateAccount = () => {
             placeholderTextColor="#B0B0B0"
           />
           {emailError ? <ErrorText>{emailError}</ErrorText> : null}
+        </InputContainer>
+        <InputContainer>
+          <Input
+            placeholder="Numero de telefono"
+            value={phone}
+            onChangeText={setPhone}
+            keyboardType="numeric"
+            autoCapitalize="none"
+            placeholderTextColor="#B0B0B0"
+          />
         </InputContainer>
         <InputContainer>
           <Input

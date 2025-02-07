@@ -20,6 +20,7 @@ const CreateFieldScreen: React.FC = () => {
     const [irrigationFrequency, setIrrigationFrequency] = useState('');
     const [nightIrrigation, setNightIrrigation] = useState(false);
     const [selectedIcon, setSelectedIcon] = useState('seedling');
+    const [hectaresToirrigate, setHectaresToirrigate] = useState('');
 
     const icons = ['seedling', 'leaf', 'wheat', 'tree', 'water'];
 
@@ -87,6 +88,14 @@ const CreateFieldScreen: React.FC = () => {
                 placeholder="Ingresa el nombre"
                 value={fieldName}
                 onChangeText={setFieldName}
+            />
+            <Text style={styles.label}>Numero de hectareas</Text>
+            <TextInput
+                style={styles.input}
+                placeholder="Ingresa el número de hectáreas"
+                keyboardType="numeric"
+                value={hectaresToirrigate}
+                onChangeText={setHectaresToirrigate}
             />
 
             <Text style={styles.label}>Tipo de Cultivo</Text>

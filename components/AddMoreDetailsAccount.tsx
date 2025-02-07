@@ -100,18 +100,13 @@ const AddMoreDetailsAccount = () => {
   const navigation = useNavigation();
   const [progress, setProgress] = useState(33);
 
-  useEffect(() => {
-    let step = 0;
-    const interval = setInterval(() => {
-      if (step < 3) {
-        setProgress((prev) => prev + 33);
-        step++;
-      } else {
-        clearInterval(interval);
-      }
-    }, 2000);
 
-    return () => clearInterval(interval);
+  useEffect(() => {
+    for (let i = 0; i < 11; i++) {
+      setTimeout(() => {
+        setProgress((prev) => prev + 3);
+      }, 15 * i);
+    }
   }, []);
 
   const handleNext = () => {
