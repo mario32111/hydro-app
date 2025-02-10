@@ -21,6 +21,7 @@
     "@react-navigation/bottom-tabs": "^7.2.0",
     "@react-navigation/native": "^7.0.14",
     "@react-navigation/stack": "^7.1.1",
+    "@reduxjs/toolkit": "^2.5.1",
     "expo": "^52.0.31",
     "expo-blur": "^14.0.3",
     "expo-constants": "^17.0.5",
@@ -47,6 +48,11 @@
     "react-native-vector-icons": "^10.2.0",
     "react-native-web": "~0.19.13",
     "react-native-webview": "13.12.5",
+    "react-redux": "^9.2.0",
+    "reactotron-react-native": "^5.1.12",
+    "reactotron-redux": "^3.1.11",
+    "redux": "^5.0.1",
+    "redux-thunk": "^3.1.0",
     "styled-components": "^6.1.14"
   },
   "devDependencies": {
