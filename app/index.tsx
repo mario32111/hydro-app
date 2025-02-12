@@ -11,7 +11,7 @@ import CreateCamp from '../components/CreateFieldScreen';
 import IrrigationDetailsScreen from '../components/IrrigationsDetailsScreen';
 import AddDetailsAccount from '@/components/AddDetailsAccount';
 import AddMoreDetailsAccount from '@/components/AddMoreDetailsAccount';
-import store from './store';
+import store from '../redux/store';
 const Stack = createStackNavigator();
 
 
