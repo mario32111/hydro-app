@@ -1,17 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { getPokemon} from "../../api";
+import { getIrrigation} from "../../api/irrigateApi";
 import { setLoading } from "./uiSlice";
 const initialState = {
-    pokemons: [],
+    irrigations: [],
 }
 
-export const fetchPokemonsWithDetails = createAsyncThunk(
-    'data/fetchPokemonsWithDetails',
+export const fetchIrrigations = createAsyncThunk(
+    'mqtt/hello',
     async (_, { dispatch }) => {
         dispatch(setLoading(true));
-        const pokemonsRes = await getPokemon();
-        dispatch(setPokemons(pokemonsRes));
+        const IrrigationsRes = await getIrrigation('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzM5NDI0NDYxfQ.Y6FVLrf8rIUOxReatpPdGkc7ZiiM5K4YgvJow7Xrhdw');
+        dispatch(setIrrigations(IrrigationsRes));
         dispatch(setLoading(false));
     }
 );
@@ -21,24 +21,13 @@ export const DataSlice = createSlice(
         name: 'data',
         initialState,
         reducers: {
-            setPokemons: (state, action) => {
-                state.pokemons = action.payload;
-            },
-            setFavorite: (state, action) => {
-                const currentPokemonIndex = state.pokemons.findIndex(
-                    (pokemon) => {
-                        return pokemon.id === action.payload.pokemonId;
-                    })
-
-                if (currentPokemonIndex >= 0) {
-                    const isFavorite = state.pokemons[currentPokemonIndex].favorite;
-                    state.pokemons[currentPokemonIndex].favorite = !isFavorite;
-                }
+            setIrrigations: (state, action) => {
+                state.irrigations = action.payload;
             }
         }
     }
 )
 
-export const { setFavorite, setPokemons } = DataSlice.actions;
+export const { setIrrigations } = DataSlice.actions;
 
 export default DataSlice.reducer;

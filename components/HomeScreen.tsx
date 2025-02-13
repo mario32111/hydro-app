@@ -7,7 +7,8 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import logoImage from '../assets/images/logo3.png';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { fetchPokemonsWithDetails } from '../slices/dataSlice';
+import { fetchIrrigations } from '../redux/slices/dataSlice';
+import { postCredentials } from '@/redux/slices/authSlice';
 
 type RootStackParamList = {
     IrrigationDetails: { system: IrrigationSystem };
@@ -31,16 +32,15 @@ interface IrrigationSystem {
 }
 
 const HomeScreen: React.FC = () => {
-    const pokemons = useSelector((state: any) => state.data.pokemons, shallowEqual);
+    const irrigations = useSelector((state: any) => state.data.irrigations, shallowEqual);
     const loading = useSelector((state: any) => state.ui.loading);
     const dispatch = useDispatch();
   
     useEffect(() => {
-      dispatch(fetchPokemonsWithDetails());
+      dispatch(fetchIrrigations());
+      dispatch(postCredentials());
     }, []);
 
-    
-    console.log("🚀 ~ pokemons:",pokemons.slice(0, 2))
     const navigation = useNavigation<HomeScreenNavigationProp>();
 
     const irrigationSystems: IrrigationSystem[] = [
