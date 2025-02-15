@@ -3,8 +3,9 @@ import { thunk } from 'redux-thunk';
 import { composeWithDevTools } from '@redux-devtools/extension';
 import rootReducer from './reducers/rootReducer';
 import Reactotron from './ReactotronConfig';
+import mqttMiddleware from '../middlewares/mqttMiddleware';
 
-const middleware = [thunk];
+const middleware = [thunk, mqttMiddleware]; // Agrega el middleware de MQTT
 let composed = applyMiddleware(...middleware);
 const createdEnhancer = Reactotron.createEnhancer();
 
@@ -16,8 +17,10 @@ if (process.env.NODE_ENV !== 'production') {
   );
 } else {
   composed = compose(applyMiddleware(...middleware)); // Solo middleware en producción
-}
+} 
 
 const store = createStore(rootReducer, composed);
+
+store.dispatch({ type: "MQTT/CONNECT" });
 
 export default store;
