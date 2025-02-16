@@ -1,18 +1,22 @@
 import { messageReceived } from "../redux/slices/mqttSlice";
 import { Client } from 'paho-mqtt';
 const options = {
-  clientId: 'your_client_id',
-  host: '192.168.1.73',  // Solo la dirección IP
-  port: 8000,             // Puerto WebSocket
+    clientId: 'your_client_id',
+    host: '192.168.1.73',  // Solo la dirección IP
+    port: 8000,             // Puerto WebSocket
 };
 
 let client = new Client(options.host, options.port, options.clientId);
 
 const mqttMiddleware = store => next => action => {
-  console.log("Middleware MQTT:", action);
+    if (action.type.includes('ui/setProgress')) {
+        return next(action); // Pasa la acción directamente al siguiente middleware sin procesarla aquí
+    }
+
+    console.log("Middleware MQTT:", action);
     switch (action.type) {
         case "MQTT/CONNECT":
-          console.log("Conectando al broker MQTT");
+            console.log("Conectando al broker MQTT");
             client.connect({
                 onSuccess: () => {
                     console.log("Conectado al broker MQTT");

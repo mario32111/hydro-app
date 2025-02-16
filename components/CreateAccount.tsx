@@ -3,6 +3,8 @@ import { Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import styled from 'styled-components/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
+import { advanceProgressBar } from '@/redux/slices/uiSlice';
 
 const CreateAccountContainer = styled.View`
   flex: 1;
@@ -106,9 +108,10 @@ const ProgressBar = styled.View`
 `;
 
 const ProgressFill = styled.View`
-  width: 1%;
   height: 100%;
   background-color: rgb(147, 194, 26);
+  width: ${(props) => props.width}%;
+  transition: width 2s ease-in-out;
 `;
 
 const CreateAccount = () => {
@@ -121,6 +124,8 @@ const CreateAccount = () => {
 
   const [emailError, setEmailError] = useState('');
   const navigation = useNavigation();
+  const progress = useSelector((state: any) => state.ui.progressBar);
+  const dispatch = useDispatch();
 
   const validateEmail = (text) => {
     setEmail(text);
@@ -149,7 +154,7 @@ const CreateAccount = () => {
         </LockIconContainer>
         <Title>Crear Cuenta</Title>
         <ProgressBar>
-          <ProgressFill />
+          <ProgressFill width={progress} />
         </ProgressBar>
         <Title2>Ingresa los datos de tu cuenta:</Title2>
         <InputContainer>
@@ -203,9 +208,17 @@ const CreateAccount = () => {
         >
           <Icon name="arrow-right" size={24} color="#FFF" />
         </NextButton>
-        <ButtonCreate onPress={() => navigation.navigate('login')}>
+        <ButtonCreate
+          onPress={() => {
+            // Primero despachamos la acción para avanzar la barra de progreso
+
+            // Luego navegamos a la pantalla de login
+            navigation.navigate('login');
+          }}
+        >
           <ButtonCreateText>¿Ya tienes cuenta? Iniciar sesión</ButtonCreateText>
         </ButtonCreate>
+
       </CreateAccountContainer>
     </KeyboardAvoidingView>
   );

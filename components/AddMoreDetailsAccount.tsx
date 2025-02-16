@@ -4,7 +4,8 @@ import { Picker } from '@react-native-picker/picker';
 import styled from 'styled-components/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { advanceProgressBar } from '@/redux/slices/uiSlice';
 const CreateAccountContainer = styled.View`
   flex: 1;
   justify-content: center;
@@ -98,15 +99,10 @@ const AddMoreDetailsAccount = () => {
   const [state, setState] = useState('');
   const [municipality, setMunicipality] = useState('');
   const navigation = useNavigation();
-  const [progress, setProgress] = useState(33);
-
-
+  const dispatch = useDispatch();
+  const progress = useSelector((state: any) => state.ui.progressBar);
   useEffect(() => {
-    for (let i = 0; i < 11; i++) {
-      setTimeout(() => {
-        setProgress((prev) => prev + 3);
-      }, 15 * i);
-    }
+    dispatch(advanceProgressBar(34))
   }, []);
 
   const handleNext = () => {

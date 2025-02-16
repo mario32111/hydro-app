@@ -4,7 +4,8 @@ import { Picker } from '@react-native-picker/picker'; // Importa Picker desde el
 import styled from 'styled-components/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { advanceProgressBar } from '@/redux/slices/uiSlice';
 const CreateAccountContainer = styled.View`
   flex: 1;
   justify-content: center;
@@ -119,94 +120,92 @@ const ProgressFill = styled.View`
 const AddDetailsAccount = () => {
 
 
-    const [names, setNames] = useState('');
-    const [lastNames, setLastNames] = useState('');
-    const [age, setAge] = useState('');
-    const [gender, setGender] = useState(''); // Estado para el género
-    const [hectaresToIrrigate, setHectaresToIrrigate] = useState('');
-    const navigation = useNavigation();
+  const [names, setNames] = useState('');
+  const [lastNames, setLastNames] = useState('');
+  const [age, setAge] = useState('');
+  const [gender, setGender] = useState(''); // Estado para el género
+  const [hectaresToIrrigate, setHectaresToIrrigate] = useState('');
+  const navigation = useNavigation();
+  const dispatch = useDispatch()
+  const handleNext = () => {
+    if (!names || !lastNames || !age || !gender || !hectaresToIrrigate) {
+      Alert.alert('Error', 'Por favor, completa todos los campos.');
+      return;
+    }
+    navigation.navigate('AddMoreDetailsAccount');
+  };
+  const progress = useSelector((state: any) => state.ui.progressBar);
+  useEffect(() => {
+    dispatch(advanceProgressBar(1))
+  }, []);
 
-    const handleNext = () => {
-        if (!names || !lastNames || !age || !gender || !hectaresToIrrigate) {
-            Alert.alert('Error', 'Por favor, completa todos los campos.');
-            return;
-        }
-        navigation.navigate('AddMoreDetailsAccount');
-    };
-    const [progress, setProgress] = useState(0);
+  return (
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
+      <CreateAccountContainer>
+        <LockIconContainer>
+          <Icon name="lock" size={24} color="#FFF" />
+        </LockIconContainer>
+        <Title>Crear Cuenta</Title>
+        <ProgressBar>
+          <ProgressFill width={progress} />
+        </ProgressBar>
+        <Title2>Ingresa tus datos personales:</Title2>
+        <InputContainer>
+          <Input
+            placeholder="Nombres"
+            value={names}
+            onChangeText={setNames}
+            autoCapitalize="words"
+            placeholderTextColor="#B0B0B0"
+          />
+          <Input
+            placeholder="Apellidos"
+            value={lastNames}
+            onChangeText={setLastNames}
+            autoCapitalize="words"
+            placeholderTextColor="#B0B0B0"
+          />
+          <Input
+            placeholder="Edad"
+            value={age}
+            onChangeText={setAge}
+            keyboardType="numeric"
+            placeholderTextColor="#B0B0B0"
+          />
+          {/* Contenedor del Picker con borde verde */}
+          <PickerContainer>
+            <Picker
+              selectedValue={gender}
+              onValueChange={(itemValue) => setGender(itemValue)}
+              style={{ color: 'rgb(177, 177, 177)' }} // Color del texto
+            >
+              <Picker.Item label="Selecciona tu género" value="" />
+              <Picker.Item label="Hombre" value="Hombre" />
+              <Picker.Item label="Mujer" value="Mujer" />
+              <Picker.Item label="Otro" value="Otro" />
+            </Picker>
+          </PickerContainer>
+          <Input
+            placeholder="Hectáreas a regar"
+            value={hectaresToIrrigate}
+            onChangeText={setHectaresToIrrigate}
+            keyboardType="numeric"
+            placeholderTextColor="#B0B0B0"
+          />
+        </InputContainer>
 
-    useEffect(() => {
-        for (let i = 0; i < 11; i++) {
-            setTimeout(() => {
-                setProgress((prev) => prev + 3);
-            }, 15 * i);
-        }
-    }, []);
+        <NextButton onPress={handleNext} disabled={!names || !lastNames || !age || !gender || !hectaresToIrrigate}>
+          <Icon name="arrow-right" size={24} color="#FFF" />
+        </NextButton>
+        <ButtonCreate onPress={() => 
 
-    return (
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
-            <CreateAccountContainer>
-                <LockIconContainer>
-                    <Icon name="lock" size={24} color="#FFF" />
-                </LockIconContainer>
-                <Title>Crear Cuenta</Title>
-                <ProgressBar>
-                    <ProgressFill width={progress} />
-                </ProgressBar>
-                <Title2>Ingresa tus datos personales:</Title2>
-                <InputContainer>
-                    <Input
-                        placeholder="Nombres"
-                        value={names}
-                        onChangeText={setNames}
-                        autoCapitalize="words"
-                        placeholderTextColor="#B0B0B0"
-                    />
-                    <Input
-                        placeholder="Apellidos"
-                        value={lastNames}
-                        onChangeText={setLastNames}
-                        autoCapitalize="words"
-                        placeholderTextColor="#B0B0B0"
-                    />
-                    <Input
-                        placeholder="Edad"
-                        value={age}
-                        onChangeText={setAge}
-                        keyboardType="numeric"
-                        placeholderTextColor="#B0B0B0"
-                    />
-                    {/* Contenedor del Picker con borde verde */}
-                    <PickerContainer>
-                        <Picker
-                            selectedValue={gender}
-                            onValueChange={(itemValue) => setGender(itemValue)}
-                            style={{ color: 'rgb(177, 177, 177)' }} // Color del texto
-                        >
-                            <Picker.Item label="Selecciona tu género" value="" />
-                            <Picker.Item label="Hombre" value="Hombre" />
-                            <Picker.Item label="Mujer" value="Mujer" />
-                            <Picker.Item label="Otro" value="Otro" />
-                        </Picker>
-                    </PickerContainer>
-                    <Input
-                        placeholder="Hectáreas a regar"
-                        value={hectaresToIrrigate}
-                        onChangeText={setHectaresToIrrigate}
-                        keyboardType="numeric"
-                        placeholderTextColor="#B0B0B0"
-                    />
-                </InputContainer>
-
-                <NextButton onPress={handleNext} disabled={!names || !lastNames || !age || !gender || !hectaresToIrrigate}>
-                    <Icon name="arrow-right" size={24} color="#FFF" />
-                </NextButton>
-                <ButtonCreate onPress={() => navigation.navigate('login')}>
-                    <ButtonCreateText>¿Ya tienes cuenta? Iniciar sesión</ButtonCreateText>
-                </ButtonCreate>
-            </CreateAccountContainer>
-        </KeyboardAvoidingView>
-    );
+          navigation.navigate('login')
+          }>
+          <ButtonCreateText>¿Ya tienes cuenta? Iniciar sesión</ButtonCreateText>
+        </ButtonCreate>
+      </CreateAccountContainer>
+    </KeyboardAvoidingView>
+  );
 };
 
 export default AddDetailsAccount;
