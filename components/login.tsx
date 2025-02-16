@@ -3,6 +3,8 @@ import { Alert, BackHandler } from 'react-native';
 import styled from 'styled-components/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
+import { postCredentials, setError } from '@/redux/slices/authSlice';
 
 const LoginContainer = styled.View`
   flex: 1;
@@ -89,18 +91,37 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const dispatch = useDispatch();
+  const isLoged = useSelector((state: any) => state.auth.loged);
+  const isError = useSelector((state: any) => state.auth.error);
+
 
   const handleLogin = () => {
+    dispatch(setError(false))
     if (email === '' || password === '') {
       Alert.alert('Error', 'Por favor, ingresa tu correo y contraseña.');
-    } else {
+    }
+
+    dispatch(postCredentials({
+      email: email,
+      password: password
+    }));
+  };
+
+  useEffect(() => {
+    if (isError === false && isLoged === true) {
       Alert.alert('Bienvenido', `Hola, ${email}!`, [
         { text: 'OK', onPress: () => handleWorkFlow() } // Navegar a WorkFlow al presionar "OK"
       ]);
     }
+    if ((isError === true && isLoged ===false) && !(email === '' || password === '') ) {
+      Alert.alert('Error', 'Correo o contraseña incorrectos.');
+    }
+    else {
+      return;
+    }
 
-
-  };
+  }, [isError, isLoged]);
   const handleCreateAccount = () => {
     navigation.navigate('CreateAccount');
   };
@@ -124,7 +145,7 @@ const Login = () => {
       return () => BackHandler.removeEventListener('hardwareBackPress', onBackPress);
     }, [])
   );
-  
+
   const handleWorkFlow = () => {
     navigation.navigate('Bar');
   };
@@ -152,8 +173,9 @@ const Login = () => {
           secureTextEntry={!showPassword}
         />
         <ToggleButton onPress={() => setShowPassword(!showPassword)}>
-          <Icon name={showPassword ? 'eye-slash' : 'eye'} size={20} color="#FFF" />
+          <Icon name={showPassword ? 'eye-slash' : 'eye'} size={20} color="#4A4A4A" />
         </ToggleButton>
+
       </InputContainer>
       <Button onPress={handleLogin}>
         <ButtonText>Ingresar</ButtonText>

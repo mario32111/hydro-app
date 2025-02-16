@@ -36,10 +36,10 @@ const HomeScreen: React.FC = () => {
     const loading = useSelector((state: any) => state.ui.loading);
     const dispatch = useDispatch();
   
-    useEffect(() => {
+/*     useEffect(() => {
       dispatch(fetchIrrigations());
       dispatch(postCredentials());
-    }, []);
+    }, []); */
 
     const navigation = useNavigation<HomeScreenNavigationProp>();
 

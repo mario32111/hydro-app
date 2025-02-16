@@ -8,15 +8,17 @@ const initialState = {
     userName: '',
     barerToken: '',
     userId: '',
+    error: undefined,
 }
+
 
 export const postCredentials = createAsyncThunk(
     'login',
-    async (_, { dispatch }) => {
+    async (data, { dispatch }) => {
         try {
             dispatch(setLoading(true)); // Inicia la carga
             
-            const LoginRes = await login(); // Espera la respuesta de login
+            const LoginRes = await login(data); // Espera la respuesta de login
             
             if (LoginRes?.token) { // Verifica si hay token en la respuesta
                 dispatch(setLoged({ loged: true })); // Debe ser un objeto
@@ -25,11 +27,13 @@ export const postCredentials = createAsyncThunk(
                     email: LoginRes.user.email,
                     userName: LoginRes.user.names, 
                     userId: LoginRes.user.id, // Corregido (antes userID)
-                    barerToken: LoginRes.token // Corregido (antes user.token)
+                    barerToken: LoginRes.token, // Corregido (antes user.token)
                 }));
+                dispatch(setError(false)); // Corregido
             }
         } catch (error) {
-            console.error("Error en login:", error);
+            console.log("Error en login:", error);
+            dispatch(setError(true));
         } finally {
             dispatch(setLoading(false)); // Termina la carga
         }
@@ -48,8 +52,11 @@ export const authSlice = createSlice({
             state.barerToken = action.payload.barerToken;
             state.userId = action.payload.userId; // Corregido
         },        
+        setError: (state, action) => {
+            state.error = action.payload;
+        }
     }
 });
 
-export const { setLoged, setCredentials } = authSlice.actions;
+export const { setLoged, setCredentials, setError } = authSlice.actions;
 export default authSlice.reducer;
