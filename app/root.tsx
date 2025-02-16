@@ -9,7 +9,7 @@ import IrrigationDetailsScreen from '../components/IrrigationsDetailsScreen';
 import AddDetailsAccount from '@/components/AddDetailsAccount';
 import AddMoreDetailsAccount from '@/components/AddMoreDetailsAccount';
 import { retrocedeProgressBar } from '@/redux/slices/uiSlice';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { createStackNavigator } from '@react-navigation/stack';
 
 const Stack = createStackNavigator();
@@ -57,7 +57,7 @@ const RootComponent: React.FC = () => {
           })}
         />
         <Stack.Screen name="Bar" component={AppNavigator} options={{ headerShown: false }} />
-        <Stack.Screen name="Inicio" component={HomeScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Inicio" component={HomeScreen} options={{ headerShown: false, gestureEnabled: false }} />
         <Stack.Screen name="Config" component={ConfigScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Crear Campo" component={CreateCamp} options={{ headerShown: true }} />
         <Stack.Screen

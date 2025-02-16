@@ -29,7 +29,7 @@ export const advanceProgressBar = (p) => async (dispatch) => {
         setTimeout(() => {
             progress += 3; // Increase progressBar by 3
             dispatch(setProgress(progress)); // Dispatch the action to update the state
-        }, 15 * i);
+        }, 7 * i);
     }
 };
 
@@ -40,7 +40,7 @@ export const retrocedeProgressBar = (p) => async (dispatch) => {
         setTimeout(() => {
             progress -= 3; // Decrease progressBar by 3
             dispatch(setProgress(progress)); // Dispatch the action to update the state
-        }, 15 * i);
+        }, 7 * i);
     }
 };
 

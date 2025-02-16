@@ -13,8 +13,8 @@ const mqttMiddleware = store => next => action => {
         return next(action); // Pasa la acción directamente al siguiente middleware sin procesarla aquí
     }
 
-    console.log("Middleware MQTT:", action);
-    switch (action.type) {
+/*     console.log("Middleware MQTT:", action);
+ */    switch (action.type) {
         case "MQTT/CONNECT":
             console.log("Conectando al broker MQTT");
             client.connect({

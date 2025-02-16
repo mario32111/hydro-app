@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, BackHandler } from 'react-native';
 import { Bar } from 'react-native-progress';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import FloatingButton from './FloatingButton';
@@ -8,7 +8,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import logoImage from '../assets/images/logo3.png';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { fetchIrrigations } from '../redux/slices/dataSlice';
-import { postCredentials } from '@/redux/slices/authSlice';
+import { useFocusEffect } from '@react-navigation/native';
 
 type RootStackParamList = {
     IrrigationDetails: { system: IrrigationSystem };
@@ -35,11 +35,21 @@ const HomeScreen: React.FC = () => {
     const irrigations = useSelector((state: any) => state.data.irrigations, shallowEqual);
     const loading = useSelector((state: any) => state.ui.loading);
     const dispatch = useDispatch();
-  
-/*     useEffect(() => {
+    useFocusEffect(
+        React.useCallback(() => {
+          const onBackPress = () => {
+            return true; // Bloquear el botón de retroceso
+          };
+      
+          BackHandler.addEventListener('hardwareBackPress', onBackPress);
+      
+          return () => BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+        }, [])
+      );
+
+    useEffect(() => {
       dispatch(fetchIrrigations());
-      dispatch(postCredentials());
-    }, []); */
+    }, []);
 
     const navigation = useNavigation<HomeScreenNavigationProp>();
 
@@ -92,7 +102,7 @@ const HomeScreen: React.FC = () => {
             <ScrollView style={styles.container}>
                 <View style={styles.header}>
                     <Image source={logoImage} style={styles.logo} resizeMode="contain" />
-                    <Text style={styles.title}>Hola 'Usuario', tus riegos:</Text>
+                    <Text style={styles.title}>Hola {useSelector((state: any) => state.auth.userName)}, tus riegos:</Text>
                 </View>
                 <View style={styles.systemContainer}>
                     {irrigationSystems.map((system, index) => (

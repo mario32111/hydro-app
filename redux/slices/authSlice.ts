@@ -54,9 +54,17 @@ export const authSlice = createSlice({
         },        
         setError: (state, action) => {
             state.error = action.payload;
+        },
+        logOut: (state, action) => {
+            state.email = "";
+            state.userName ="";
+            state.barerToken = "";
+            state.userId = "";
+            state.loged = false;
+            state.error = undefined;
         }
     }
 });
 
-export const { setLoged, setCredentials, setError } = authSlice.actions;
+export const { setLoged, setCredentials, setError, logOut } = authSlice.actions;
 export default authSlice.reducer;

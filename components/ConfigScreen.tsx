@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, Switch, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { useDispatch } from 'react-redux';
+import { logOut } from '@/redux/slices/authSlice';
 
 const SettingsScreen = () => {
   const navigation = useNavigation();
@@ -17,6 +19,7 @@ const SettingsScreen = () => {
   const toggleSupportSection = () => setIsSupportExpanded((prev) => !prev);
   const toggleUserManagementSection = () => setIsUserManagementExpanded((prev) => !prev);
 
+  const dispatch = useDispatch(); 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Configuración</Text>
@@ -113,7 +116,10 @@ const SettingsScreen = () => {
         </View>
       )}
 
-      <TouchableOpacity style={styles.logoutButton} onPress={() => {navigation.navigate('login')}}>
+      <TouchableOpacity style={styles.logoutButton} onPress={() => {
+        dispatch(logOut());
+        navigation.navigate('login');
+        }}>
         <Text style={styles.logoutText}>Cerrar Sesión</Text>
       </TouchableOpacity>
     </View>

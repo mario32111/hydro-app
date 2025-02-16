@@ -4,7 +4,7 @@ import styled from 'styled-components/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
-import { postCredentials, setError } from '@/redux/slices/authSlice';
+import { postCredentials, setError} from '@/redux/slices/authSlice';
 
 const LoginContainer = styled.View`
   flex: 1;
@@ -145,6 +145,7 @@ const Login = () => {
       return () => BackHandler.removeEventListener('hardwareBackPress', onBackPress);
     }, [])
   );
+
 
   const handleWorkFlow = () => {
     navigation.navigate('Bar');
