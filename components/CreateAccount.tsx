@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { advanceProgressBar } from '@/redux/slices/uiSlice';
-
+import { setCreateAccountData } from '@/redux/slices/authSlice';
 const CreateAccountContainer = styled.View`
   flex: 1;
   justify-content: center;
@@ -142,6 +142,7 @@ const CreateAccount = () => {
     } else if (password !== confirmPassword) {
       Alert.alert('Error', 'Las contraseñas no coinciden.');
     } else {
+      dispatch(setCreateAccountData({ email, password, phone})); // Solo actualiza email y password
       navigation.navigate('AddDetailsAccount');
     }
   };
@@ -210,9 +211,6 @@ const CreateAccount = () => {
         </NextButton>
         <ButtonCreate
           onPress={() => {
-            // Primero despachamos la acción para avanzar la barra de progreso
-
-            // Luego navegamos a la pantalla de login
             navigation.navigate('login');
           }}
         >

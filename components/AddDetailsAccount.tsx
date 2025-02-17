@@ -6,6 +6,8 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { advanceProgressBar } from '@/redux/slices/uiSlice';
+import { setCreateAccountData } from '@/redux/slices/authSlice';
+
 const CreateAccountContainer = styled.View`
   flex: 1;
   justify-content: center;
@@ -122,16 +124,19 @@ const AddDetailsAccount = () => {
 
   const [names, setNames] = useState('');
   const [lastNames, setLastNames] = useState('');
-  const [age, setAge] = useState('');
   const [gender, setGender] = useState(''); // Estado para el género
-  const [hectaresToIrrigate, setHectaresToIrrigate] = useState('');
+  const [hectares, setHectares] = useState('');
   const navigation = useNavigation();
   const dispatch = useDispatch()
   const handleNext = () => {
-    if (!names || !lastNames || !age || !gender || !hectaresToIrrigate) {
+    if (!names || !lastNames || !gender || !hectares) {
       Alert.alert('Error', 'Por favor, completa todos los campos.');
       return;
     }
+    let hectares_to_irrigate = parseInt(hectares);
+
+    dispatch(setCreateAccountData({ names, lastNames, gender, hectares_to_irrigate })); // Solo actualiza email y password
+
     navigation.navigate('AddMoreDetailsAccount');
   };
   const progress = useSelector((state: any) => state.ui.progressBar);
@@ -166,9 +171,9 @@ const AddDetailsAccount = () => {
             placeholderTextColor="#B0B0B0"
           />
           <Input
-            placeholder="Edad"
-            value={age}
-            onChangeText={setAge}
+            placeholder="Hectáreas a regar"
+            value={hectares}
+            onChangeText={setHectares}
             keyboardType="numeric"
             placeholderTextColor="#B0B0B0"
           />
@@ -185,22 +190,15 @@ const AddDetailsAccount = () => {
               <Picker.Item label="Otro" value="Otro" />
             </Picker>
           </PickerContainer>
-          <Input
-            placeholder="Hectáreas a regar"
-            value={hectaresToIrrigate}
-            onChangeText={setHectaresToIrrigate}
-            keyboardType="numeric"
-            placeholderTextColor="#B0B0B0"
-          />
         </InputContainer>
 
-        <NextButton onPress={handleNext} disabled={!names || !lastNames || !age || !gender || !hectaresToIrrigate}>
+        <NextButton onPress={handleNext} disabled={!names || !lastNames || !gender || !hectares}>
           <Icon name="arrow-right" size={24} color="#FFF" />
         </NextButton>
-        <ButtonCreate onPress={() => 
+        <ButtonCreate onPress={() =>
 
           navigation.navigate('login')
-          }>
+        }>
           <ButtonCreateText>¿Ya tienes cuenta? Iniciar sesión</ButtonCreateText>
         </ButtonCreate>
       </CreateAccountContainer>

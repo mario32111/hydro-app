@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Alert, KeyboardAvoidingView, Platform, View } from 'react-native';
+import { Alert, KeyboardAvoidingView, Platform, View, TextInput } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import styled from 'styled-components/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { advanceProgressBar } from '@/redux/slices/uiSlice';
+import { setCreateAccountData, changeToEnglishGender, createUserThunk } from '@/redux/slices/authSlice';
+
 const CreateAccountContainer = styled.View`
   flex: 1;
   justify-content: center;
@@ -32,22 +34,29 @@ const Title = styled.Text`
   text-align: center;
 `;
 
-const Title2 = styled.Text`
+const Label = styled.Text`
   font-size: 16px;
   margin-bottom: 15px;
   color: #4a4a4a;
   align-self: flex-start;
 `;
 
-const PickerContainer = styled.View`
+const RowContainer = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
   width: 100%;
+  margin-bottom: 15px;
+`;
+
+const PickerContainer = styled.View`
+  flex: 1;
   height: 50px;
   border-width: 1px;
   border-color: rgb(147, 194, 26);
   border-radius: 8px;
-  margin-bottom: 15px;
   background-color: #ffffff;
   justify-content: center;
+  margin-right: 5px;
 `;
 
 const NextButton = styled.TouchableOpacity`
@@ -91,26 +100,60 @@ const ProgressFill = styled.View`
   height: 100%;
   background-color: rgb(147, 194, 26);
   width: ${(props) => props.width}%;
-  transition: width 2s ease-in-out;
+`;
+
+const TextInputStyled = styled.TextInput`
+  width: 100%;
+  height: 50px;
+  border-width: 1px;
+  border-color: rgb(147, 194, 26);
+  border-radius: 8px;
+  margin-bottom: 15px;
+  background-color: #ffffff;
+  padding: 10px;
+  font-size: 16px;
+  color: #4a4a4a;
 `;
 
 const AddMoreDetailsAccount = () => {
-  const [country, setCountry] = useState('');
-  const [state, setState] = useState('');
-  const [municipality, setMunicipality] = useState('');
+  const [day, setDay] = useState('');
+  const [month, setMonth] = useState('');
+  const [year, setYear] = useState('');
+  const [zip_code, setZip_code] = useState('');
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const progress = useSelector((state: any) => state.ui.progressBar);
+  const progress = useSelector((state) => state.ui.progressBar);
+
   useEffect(() => {
-    dispatch(advanceProgressBar(34))
+    dispatch(advanceProgressBar(34));
   }, []);
 
+  const isValidDate = () => {
+    const parsedMonth = parseInt(month, 10); // Convertir a número
+    const date = new Date(year, parsedMonth - 1, day); // Mes en base 0
+    return date.getFullYear() == year && date.getMonth() + 1 == parsedMonth && date.getDate() == day;
+  };
+
+
   const handleNext = () => {
-    if (!country || !state || !municipality) {
-      Alert.alert('Error', 'Por favor, selecciona todos los campos.');
+    if (!day || !month || !year || !zip_code) {
+      Alert.alert('Error', 'Por favor, completa todos los campos.');
       return;
     }
-    navigation.navigate('Inicio');
+    if (!isValidDate()) {
+      Alert.alert('Error', 'Fecha de nacimiento inválida.');
+      return;
+    }
+    if (zip_code.length !== 5 || isNaN(zip_code)) {
+      Alert.alert('Error', 'El código postal debe tener 5 dígitos numéricos.');
+      return;
+    }
+    const birthdate = `${day}-${month}-${year}`
+    dispatch(setCreateAccountData({ birthdate, zip_code })); // Solo actualiza email y password
+    dispatch(changeToEnglishGender());
+    dispatch(createUserThunk())
+
+    navigation.navigate('Bar');
   };
 
   return (
@@ -123,39 +166,52 @@ const AddMoreDetailsAccount = () => {
         <ProgressBar>
           <ProgressFill width={progress} />
         </ProgressBar>
-        <Title2>Selecciona tu ubicación:</Title2>
 
-        <PickerContainer>
-          <Picker selectedValue={country} onValueChange={(itemValue) => setCountry(itemValue)} style={{ color: 'rgb(177, 177, 177)' }}>
-            <Picker.Item label="Selecciona tu país" value="" />
-            <Picker.Item label="México" value="México" />
-            <Picker.Item label="Estados Unidos" value="Estados Unidos" />
-            <Picker.Item label="Canadá" value="Canadá" />
-          </Picker>
-        </PickerContainer>
+        <Label>Fecha de Nacimiento: </Label>
+        <RowContainer>
+          <PickerContainer>
+            <Picker selectedValue={day} onValueChange={(itemValue) => setDay(itemValue)}>
+              <Picker.Item label="Día" value="" />
+              {[...Array(31)].map((_, i) => (
+                <Picker.Item key={i} label={`${i + 1}`} value={`${i + 1}`} />
+              ))}
+            </Picker>
+          </PickerContainer>
 
-        <PickerContainer>
-          <Picker selectedValue={state} onValueChange={(itemValue) => setState(itemValue)} style={{ color: 'rgb(177, 177, 177)' }}>
-            <Picker.Item label="Selecciona tu estado" value="" />
-            <Picker.Item label="Durango" value="Durango" />
-            <Picker.Item label="Jalisco" value="Jalisco" />
-            <Picker.Item label="Nuevo León" value="Nuevo León" />
-          </Picker>
-        </PickerContainer>
+          <PickerContainer>
+            <Picker selectedValue={month} onValueChange={(itemValue) => setMonth(itemValue)}>
+              <Picker.Item label="Mes" value="" />
+              {[...Array(12)].map((_, i) => (
+                <Picker.Item key={i} label={`${i + 1}`} value={`${i + 1}`} />
+              ))}
+            </Picker>
+          </PickerContainer>
 
-        <PickerContainer>
-          <Picker selectedValue={municipality} onValueChange={(itemValue) => setMunicipality(itemValue)} style={{ color: 'rgb(177, 177, 177)' }}>
-            <Picker.Item label="Selecciona tu municipio" value="" />
-            <Picker.Item label="Durango" value="Durango" />
-            <Picker.Item label="Gómez Palacio" value="Gómez Palacio" />
-            <Picker.Item label="Lerdo" value="Lerdo" />
-          </Picker>
-        </PickerContainer>
+          <PickerContainer>
+            <Picker selectedValue={year} onValueChange={(itemValue) => setYear(itemValue)}>
+              <Picker.Item label="Año" value="" />
+              {[...Array(100)].map((_, i) => (
+                <Picker.Item key={i} label={`${2024 - i}`} value={`${2024 - i}`} />
+              ))}
+            </Picker>
+          </PickerContainer>
+        </RowContainer>
 
-        <NextButton onPress={handleNext} disabled={!country || !state || !municipality}>
+        <TextInputStyled
+          placeholder="Código Postal"
+          keyboardType="numeric"
+          value={zip_code}
+          onChangeText={setZip_code}
+          maxLength={5}
+        />
+
+        <NextButton onPress={handleNext}>
           <Icon name="arrow-right" size={24} color="#FFF" />
         </NextButton>
-        <ButtonCreate onPress={() => navigation.navigate('login')}>
+        <ButtonCreate onPress={() =>
+
+          navigation.navigate('login')
+        }>
           <ButtonCreateText>¿Ya tienes cuenta? Iniciar sesión</ButtonCreateText>
         </ButtonCreate>
       </CreateAccountContainer>
