@@ -7,6 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { advanceProgressBar } from '@/redux/slices/uiSlice';
 import { setCreateAccountData, changeToEnglishGender, createUserThunk } from '@/redux/slices/authSlice';
+import { postCredentials } from '@/redux/slices/authSlice';
 
 const CreateAccountContainer = styled.View`
   flex: 1;
@@ -151,7 +152,14 @@ const AddMoreDetailsAccount = () => {
     const birthdate = `${day}-${month}-${year}`
     dispatch(setCreateAccountData({ birthdate, zip_code })); // Solo actualiza email y password
     dispatch(changeToEnglishGender());
-    dispatch(createUserThunk())
+    dispatch(createUserThunk());
+
+    const email = useSelector((state: any) => state.auth.CreateAccountData.email);
+    const password = useSelector((state: any) => state.auth.CreateAccountData.password);
+    dispatch(postCredentials({
+      email: email,
+      password: password,
+    }));
 
     navigation.navigate('Bar');
   };

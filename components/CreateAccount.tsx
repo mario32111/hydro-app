@@ -6,6 +6,9 @@ import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { advanceProgressBar } from '@/redux/slices/uiSlice';
 import { setCreateAccountData } from '@/redux/slices/authSlice';
+import { checkEmail } from '@/api/authApi';
+import { Headline } from 'react-native-paper';
+
 const CreateAccountContainer = styled.View`
   flex: 1;
   justify-content: center;
@@ -123,6 +126,8 @@ const CreateAccount = () => {
   const [showPassword2, setShowPassword2] = useState(false);
 
   const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [phoneError, setPhoneError] = useState('');
   const navigation = useNavigation();
   const progress = useSelector((state: any) => state.ui.progressBar);
   const dispatch = useDispatch();
@@ -136,14 +141,50 @@ const CreateAccount = () => {
     }
   };
 
+  const validatePassword = (text) => {
+    setPassword(text);
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    if (!passwordRegex.test(text)) {
+      setPasswordError('La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número.');
+    } else {
+      setPasswordError('');
+    }
+  };
+
+  const validatePhone = (text) => {
+    setPhone(text);
+    const phoneRegex = /^\d{10}$/; // Asegura que sean exactamente 10 dígitos
+    if (!phoneRegex.test(text)) {
+      setPhoneError('El número de teléfono debe tener exactamente 10 dígitos.');
+    } else {
+      setPhoneError('');
+    }
+  };
+
+  const handleCreateAccount  = async () => {
+    try {
+      const res = await checkEmail(email);
+      console.log(res);
+      if (res.exists === true) {
+        Alert.alert('Error', 'Ya hay una cuenta asociada a este correo');
+      }else{
+        navigation.navigate('AddDetailsAccount');
+
+      }
+    } catch (error) {
+      console.error("Error al verificar el correo:", error);
+    }
+  }
+
   const handleNext = () => {
-    if (!email || !password || !confirmPassword) {
+    if (!email || !password || !confirmPassword || !phone) {
       Alert.alert('Error', 'Por favor, completa todos los campos.');
     } else if (password !== confirmPassword) {
       Alert.alert('Error', 'Las contraseñas no coinciden.');
     } else {
-      dispatch(setCreateAccountData({ email, password, phone})); // Solo actualiza email y password
-      navigation.navigate('AddDetailsAccount');
+      dispatch(setCreateAccountData({ email, password, phone }));
+      handleCreateAccount();
+      // Aquí, podemos usar await porque handleCreateAccount es una función async
     }
   };
 
@@ -171,25 +212,27 @@ const CreateAccount = () => {
         </InputContainer>
         <InputContainer>
           <Input
-            placeholder="Numero de telefono"
+            placeholder="Número de teléfono"
             value={phone}
-            onChangeText={setPhone}
+            onChangeText={validatePhone}
             keyboardType="numeric"
             autoCapitalize="none"
             placeholderTextColor="#B0B0B0"
           />
+          {phoneError ? <ErrorText>{phoneError}</ErrorText> : null}
         </InputContainer>
         <InputContainer>
           <Input
             placeholder="Contraseña"
             placeholderTextColor="#B0B0B0"
             value={password}
-            onChangeText={setPassword}
+            onChangeText={validatePassword}
             secureTextEntry={!showPassword}
           />
           <ToggleButton onPress={() => setShowPassword(!showPassword)}>
             <Icon name={showPassword ? 'eye-slash' : 'eye'} size={20} color="#4A4A4A" />
           </ToggleButton>
+          {passwordError ? <ErrorText>{passwordError}</ErrorText> : null}
         </InputContainer>
         <InputContainer>
           <Input
@@ -205,7 +248,7 @@ const CreateAccount = () => {
         </InputContainer>
         <NextButton
           onPress={handleNext}
-          disabled={!!(!email || emailError || !password || !confirmPassword)}
+          disabled={!!(!email || emailError || !password || passwordError || !confirmPassword || phoneError)}
         >
           <Icon name="arrow-right" size={24} color="#FFF" />
         </NextButton>
@@ -216,7 +259,6 @@ const CreateAccount = () => {
         >
           <ButtonCreateText>¿Ya tienes cuenta? Iniciar sesión</ButtonCreateText>
         </ButtonCreate>
-
       </CreateAccountContainer>
     </KeyboardAvoidingView>
   );
