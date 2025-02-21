@@ -3,15 +3,15 @@ import {
     View,
     Text,
     TextInput,
-    StyleSheet,
     ScrollView,
     TouchableOpacity,
 } from 'react-native';
 import { Checkbox } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Picker } from '@react-native-picker/picker';
-import IconModalForm from './IconModalForm'; // Asegúrate de que el nombre del archivo coincida
-import { useNavigation } from '@react-navigation/native'; // Importa el hook useNavigation
+import IconModalForm from './IconModalForm';
+import { useNavigation } from '@react-navigation/native';
+import styles from './styles'; // Importa los estilos desde el archivo separado
 
 const CreateFieldScreen: React.FC = () => {
     const [fieldName, setFieldName] = useState('');
@@ -23,16 +23,14 @@ const CreateFieldScreen: React.FC = () => {
     const [hectaresToirrigate, setHectaresToirrigate] = useState('');
 
     const icons = ['seedling', 'leaf', 'wheat', 'tree', 'water'];
-
-    const navigation = useNavigation(); // Hook para la navegación
+    const navigation = useNavigation();
 
     const handleIconSelect = (icon: string) => {
         setSelectedIcon(icon);
-        setModalVisible(false); // Cierra el modal después de seleccionar el icono
+        setModalVisible(false);
     };
 
     const handleSubmit = () => {
-        // Validación de campos
         if (!fieldName || !cropType || !irrigationCycle || !irrigationFrequency || !selectedIcon) {
             alert('Por favor, llena todos los campos.');
             return;
@@ -48,24 +46,17 @@ const CreateFieldScreen: React.FC = () => {
         });
 
         alert('Campo creado exitosamente');
-        navigation.navigate('Bar'); // Redirige a la pantalla "Inicio"
+        navigation.navigate('Bar');
     };
 
-    // Modal control
     const [modalVisible, setModalVisible] = useState(false);
-    const handleOpenModal = () => {
-        setModalVisible(true);
-    };
-    const handleCloseModal = () => {
-        setModalVisible(false);
-    };
 
     return (
         <ScrollView style={styles.container}>
             <Text style={styles.title}>Crear Nuevo Campo</Text>
 
             <Text style={styles.label}>Seleccionar Ícono</Text>
-            <TouchableOpacity onPress={handleOpenModal}>
+            <TouchableOpacity onPress={() => setModalVisible(true)}>
                 <View style={[styles.iconContainer, styles.iconWrapper]}>
                     <MaterialCommunityIcons
                         name={selectedIcon}
@@ -77,9 +68,9 @@ const CreateFieldScreen: React.FC = () => {
 
             <IconModalForm
                 visible={modalVisible}
-                onClose={handleCloseModal}
-                onSubmit={handleIconSelect} // Pasa la función handleIconSelect al modal
-                icons={icons} // Pasa la lista de iconos disponibles
+                onClose={() => setModalVisible(false)}
+                onSubmit={handleIconSelect}
+                icons={icons}
             />
 
             <Text style={styles.label}>Nombre del Campo</Text>
@@ -89,7 +80,7 @@ const CreateFieldScreen: React.FC = () => {
                 value={fieldName}
                 onChangeText={setFieldName}
             />
-            <Text style={styles.label}>Numero de hectareas</Text>
+            <Text style={styles.label}>Número de hectáreas</Text>
             <TextInput
                 style={styles.input}
                 placeholder="Ingresa el número de hectáreas"
@@ -148,76 +139,5 @@ const CreateFieldScreen: React.FC = () => {
         </ScrollView>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#FFF',
-        padding: 20,
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: 'rgb(147,194,26)',
-        marginBottom: 20,
-        textAlign: 'center',
-    },
-    label: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        marginBottom: 5,
-        color: 'gray',
-    },
-    input: {
-        borderWidth: 1,
-        borderColor: 'gray',
-        borderRadius: 8,
-        padding: 10,
-        marginBottom: 15,
-    },
-    iconContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginBottom: 20,
-    },
-    iconWrapper: {
-        padding: 10,
-        borderRadius: 8,
-        borderWidth: 1,
-        borderColor: 'transparent',
-    },
-    checkboxContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 20,
-    },
-    checkboxLabel: {
-        marginLeft: 10,
-        color: 'gray',
-    },
-    submitButton: {
-        backgroundColor: 'rgb(147,194,26)',
-        padding: 15,
-        borderRadius: 8,
-        alignItems: 'center',
-    },
-    submitButtonText: {
-        color: '#FFF',
-        fontSize: 16,
-        fontWeight: 'bold',
-    },
-    picker: {
-        borderWidth: 1,
-        borderColor: 'gray',
-        borderRadius: 8,
-        padding: 0,
-    },
-    pickerContainer: {
-        borderWidth: 1,
-        borderRadius: 8,
-        marginBottom: 15,
-        backgroundColor: '#FFF',
-    },
-});
 
 export default CreateFieldScreen;

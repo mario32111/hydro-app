@@ -1,8 +1,8 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons'; // Importa Ionicons para iconos minimalistas
-import SettingsScreen from '../ConfigScreen';
-import HomeScreen from '../HomeScreen';
+import SettingsScreen from '../configScreen/ConfigScreen';
+import HomeScreen from '../HomeScreen/HomeScreen';
 
 const Tab = createBottomTabNavigator();
 

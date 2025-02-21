@@ -5,7 +5,7 @@ import { Picker } from '@react-native-picker/picker';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation, RouteProp } from '@react-navigation/native';
 import { useRoute } from '@react-navigation/native';
-import IconModalForm from './IconModalForm'; // Asegúrate de que el nombre del archivo coincida
+import IconModalForm from '../createFieldScreen/IconModalForm'; // Asegúrate de que el nombre del archivo coincida
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 type RootStackParamList = {

@@ -1,57 +1,36 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, BackHandler } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, Image, BackHandler } from 'react-native';
 import { Bar } from 'react-native-progress';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import FloatingButton from './FloatingButton';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import logoImage from '../assets/images/logo3.png';
+import logoImage from '../../assets/images/logo3.png';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { fetchIrrigations } from '../redux/slices/dataSlice';
+import { fetchIrrigations } from '../../redux/slices/dataSlice';
 import { useFocusEffect } from '@react-navigation/native';
-
-type RootStackParamList = {
-    IrrigationDetails: { system: IrrigationSystem };
-};
+import { styles } from './styles';
+import { IrrigationSystem, RootStackParamList } from './types';
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Detalles de riego'>;
-
-interface Stage {
-    name: string;
-    responsible: string;
-    completed: boolean;
-    completionDate?: string;
-}
-
-interface IrrigationSystem {
-    name: string;
-    progress: number;
-    icon: string;
-    hours: string;
-    stages: Stage[];
-}
 
 const HomeScreen: React.FC = () => {
     const irrigations = useSelector((state: any) => state.data.irrigations, shallowEqual);
     const loading = useSelector((state: any) => state.ui.loading);
     const dispatch = useDispatch();
+    const navigation = useNavigation<HomeScreenNavigationProp>();
+    
     useFocusEffect(
         React.useCallback(() => {
-          const onBackPress = () => {
-            return true; // Bloquear el botón de retroceso
-          };
-      
+          const onBackPress = () => true;
           BackHandler.addEventListener('hardwareBackPress', onBackPress);
-      
           return () => BackHandler.removeEventListener('hardwareBackPress', onBackPress);
         }, [])
-      );
+    );
 
     useEffect(() => {
-      dispatch(fetchIrrigations());
+        dispatch(fetchIrrigations());
     }, []);
-
-    const navigation = useNavigation<HomeScreenNavigationProp>();
 
     const irrigationSystems: IrrigationSystem[] = [
         {
@@ -106,21 +85,12 @@ const HomeScreen: React.FC = () => {
                 </View>
                 <View style={styles.systemContainer}>
                     {irrigationSystems.map((system, index) => (
-                        <TouchableOpacity
-                            key={index}
-                            style={styles.system}
-                            onPress={() => handleSystemPress(system)}
-                        >
+                        <TouchableOpacity key={index} style={styles.system} onPress={() => handleSystemPress(system)}>
                             <View style={styles.systemInfo}>
                                 <Icon name={system.icon} size={20} color="gray" />
                                 <Text style={styles.systemName}>{system.name}</Text>
                             </View>
-                            <Bar
-                                progress={system.progress}
-                                width={null}
-                                color="rgb(147,194,26)"
-                                style={styles.progressBar}
-                            />
+                            <Bar progress={system.progress} width={null} color="rgb(147,194,26)" style={styles.progressBar} />
                             <View style={styles.stageSummary}>
                                 <View style={styles.systemHoursContainer}>
                                     <Icon name="clock" size={20} color="gray" style={styles.clockIcon} />
@@ -136,73 +106,5 @@ const HomeScreen: React.FC = () => {
         </>
     );
 };
-
-const styles = StyleSheet.create({
-    logo: {
-        width: 50,
-        height: 50,
-    },
-    container: {
-        flex: 1,
-        backgroundColor: '#FFF',
-        padding: 20,
-        paddingTop: 50,
-    },
-    header: {
-        alignItems: 'center',
-        marginBottom: 20,
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: 'rgb(147,194,26)',
-        marginTop: 10,
-    },
-    systemContainer: {
-        marginTop: 20,
-    },
-    system: {
-        backgroundColor: '#F5F5F5',
-        padding: 15,
-        borderRadius: 10,
-        marginBottom: 15,
-        shadowColor: '#000',
-        shadowOpacity: 0.1,
-        shadowOffset: { width: 0, height: 2 },
-        shadowRadius: 5,
-        elevation: 3,
-    },
-    systemInfo: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 10,
-    },
-    systemName: {
-        fontSize: 18,
-        color: 'rgb(147,194,26)',
-        marginLeft: 10,
-        flex: 1,
-    },
-    progressBar: {
-        marginVertical: 10,
-    },
-    stageSummary: {
-        marginTop: 10,
-    },
-    systemHoursContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    systemHours: {
-        color: 'gray',
-        fontSize: 14,
-        marginLeft: 10,
-    },
-    warning: {
-        color: 'red',
-        fontSize: 12,
-        marginTop: 5,
-    },
-});
 
 export default HomeScreen;

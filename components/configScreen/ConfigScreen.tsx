@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, Switch, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Switch, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useDispatch } from 'react-redux';
 import { logOut } from '@/redux/slices/authSlice';
+import styles from './styles';
 
 const SettingsScreen = () => {
   const navigation = useNavigation();
@@ -19,7 +20,8 @@ const SettingsScreen = () => {
   const toggleSupportSection = () => setIsSupportExpanded((prev) => !prev);
   const toggleUserManagementSection = () => setIsUserManagementExpanded((prev) => !prev);
 
-  const dispatch = useDispatch(); 
+  const dispatch = useDispatch();
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Configuración</Text>
@@ -98,7 +100,6 @@ const SettingsScreen = () => {
         </View>
       )}
 
-
       {isUserManagementExpanded && (
         <View style={styles.subSectionContainer}>
           <TouchableOpacity style={styles.toggleContainer}>
@@ -119,85 +120,11 @@ const SettingsScreen = () => {
       <TouchableOpacity style={styles.logoutButton} onPress={() => {
         dispatch(logOut());
         navigation.navigate('login');
-        }}>
+      }}>
         <Text style={styles.logoutText}>Cerrar Sesión</Text>
       </TouchableOpacity>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#fff',  // Fondo blanco
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginTop: 20,
-    marginBottom: 20,
-    color: '#333',  // Texto oscuro
-  },
-  iconTextContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-  settingContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-  toggleContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 15,
-    backgroundColor: '#f1f1f1',  // Fondo claro para los submenús
-    padding: 12,
-    borderRadius: 12,
-    marginBottom: 12,
-  },
-  settingText: {
-    fontSize: 18,
-    color: '#333',  // Texto oscuro
-  },
-  sectionHeader: {
-    marginTop: 30,
-    marginBottom: 10,
-  },
-  sectionToggle: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  sectionText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',  // Texto oscuro
-  },
-  sectionToggleText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',  // Texto oscuro
-  },
-  subSectionContainer: {
-    paddingLeft: 20,
-  },
-  logoutButton: {
-    marginTop: 40,
-    paddingVertical: 15,
-    backgroundColor: '#93C21A',  // Verde para el botón de logout
-    borderRadius: 8,
-  },
-  logoutText: {
-    color: '#fff',
-    textAlign: 'center',
-    fontWeight: 'bold',
-    fontSize: 18,
-  },
-});
 
 export default SettingsScreen;
