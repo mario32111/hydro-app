@@ -10,7 +10,6 @@ export interface IrrigationSystem {
     progress: number;
     icon: string;
     hours: string;
-    stages: Stage[];
 }
 
 export type RootStackParamList = {

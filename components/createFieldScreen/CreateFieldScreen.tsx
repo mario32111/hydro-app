@@ -12,6 +12,8 @@ import { Picker } from '@react-native-picker/picker';
 import IconModalForm from './IconModalForm';
 import { useNavigation } from '@react-navigation/native';
 import styles from './styles'; // Importa los estilos desde el archivo separado
+import { useDispatch, useSelector } from 'react-redux';
+import { createNewIrrigation } from '@/redux/slices/dataSlice';
 
 const CreateFieldScreen: React.FC = () => {
     const [fieldName, setFieldName] = useState('');
@@ -24,18 +26,19 @@ const CreateFieldScreen: React.FC = () => {
 
     const icons = ['seedling', 'leaf', 'wheat', 'tree', 'water'];
     const navigation = useNavigation();
-
+    const token = useSelector((state: any) => state.auth.barerToken);
+    const user_id = useSelector((state: any) => state.auth.userId);
+    const dispatch = useDispatch();
     const handleIconSelect = (icon: string) => {
         setSelectedIcon(icon);
         setModalVisible(false);
     };
 
-    const handleSubmit = () => {
-        if (!fieldName || !cropType || !irrigationCycle || !irrigationFrequency || !selectedIcon) {
+    const handleSubmit = async () => {
+        if (!fieldName || !cropType || !irrigationCycle || !irrigationFrequency || !selectedIcon || !hectaresToirrigate) {
             alert('Por favor, llena todos los campos.');
             return;
         }
-
         console.log({
             fieldName,
             cropType,
@@ -45,6 +48,18 @@ const CreateFieldScreen: React.FC = () => {
             selectedIcon,
         });
 
+        const data = {
+            user_id: user_id,
+            hectares_number: hectaresToirrigate,
+            nocturnal_irrigation: nightIrrigation,
+            crop_type: cropType,
+            icon: selectedIcon,
+            name: fieldName,
+            irrigation_frequency: irrigationFrequency,
+            irrigation_cycle: irrigationCycle,
+        };
+
+        dispatch(createNewIrrigation(data))        
         alert('Campo creado exitosamente');
         navigation.navigate('Bar');
     };
@@ -53,8 +68,6 @@ const CreateFieldScreen: React.FC = () => {
 
     return (
         <ScrollView style={styles.container}>
-            <Text style={styles.title}>Crear Nuevo Campo</Text>
-
             <Text style={styles.label}>Seleccionar Ícono</Text>
             <TouchableOpacity onPress={() => setModalVisible(true)}>
                 <View style={[styles.iconContainer, styles.iconWrapper]}>

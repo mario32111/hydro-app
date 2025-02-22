@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { advanceProgressBar } from '@/redux/slices/uiSlice';
-import { setCreateAccountData, changeToEnglishGender, createUserThunk } from '@/redux/slices/authSlice';
+import { setCreateAccountData, changeToEnglishGender, createUserThunk, clearCreateAccountData } from '@/redux/slices/authSlice';
 import { postCredentials } from '@/redux/slices/authSlice';
 
 const CreateAccountContainer = styled.View`
@@ -159,7 +159,8 @@ const AddMoreDetailsAccount = () => {
     dispatch(postCredentials({
       email: email,
       password: password,
-    }));
+    }));  
+    dispatch(clearCreateAccountData)
 
     navigation.navigate('Bar');
   };

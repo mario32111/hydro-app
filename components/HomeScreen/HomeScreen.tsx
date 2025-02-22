@@ -20,6 +20,7 @@ const HomeScreen: React.FC = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation<HomeScreenNavigationProp>();
     
+    
     useFocusEffect(
         React.useCallback(() => {
           const onBackPress = () => true;
@@ -32,32 +33,13 @@ const HomeScreen: React.FC = () => {
         dispatch(fetchIrrigations());
     }, []);
 
-    const irrigationSystems: IrrigationSystem[] = [
-        {
-            name: 'Riego Principal',
-            progress: 0.2,
-            icon: 'leaf',
-            hours: '1h:30m',
-            stages: [
-                { name: 'Inspección de válvulas', completed: true, completionDate: '2024-10-01' },
-                { name: 'Limpieza de filtros', completed: true },
-                { name: 'Prueba de presión', completed: true },
-                { name: 'Revisión de caudal', completed: false },
-                { name: 'Optimización del sistema', completed: false },
-            ],
-        },
-        {
-            name: 'Riego Secundario',
-            progress: 0.9,
-            icon: 'seedling',
-            hours: '2d:3h:20m',
-            stages: [
-                { name: 'Revisión de aspersores', completed: true },
-                { name: 'Mantenimiento del motor', completed: false },
-                { name: 'Ajuste del temporizador', completed: false },
-            ],
-        },
-    ];
+
+    const irrigationSystems: IrrigationSystem[] = irrigations.map((irrigation: any) => ({
+        name: irrigation.name,
+        progress: 0.2,
+        icon: irrigation.icon, 
+        hours: '2d:3h:20m',
+    }));
 
     const handleSystemPress = (system: IrrigationSystem) => {
         navigation.navigate('Detalles de riego', { system });
