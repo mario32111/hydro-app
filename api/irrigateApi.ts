@@ -16,20 +16,19 @@ export const getIrrigation = (token: string,id: any) => {
 
 
 
-export const getIrrigations = (token: string,id: any) => {
-    return axios
-        .get(`http://192.168.1.73:3000/api/v1/irrigation/getAll/${id}`, {
+export const getIrrigations = async (token: string, id: any) => {    
+    try {
+        const response = await axios.get(`http://192.168.1.73:3000/api/v1/irrigation/getAll/${id}`, {
             headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
-        .then((res) => res.data)
-        .catch((err) => {
-            console.error(err);
-            return []; // Devolvemos un arreglo vacío en caso de error
+                Authorization: `Bearer ${token}`,
+            },
         });
+        return response.data; // Retornamos los datos del servidor
+    } catch (error) {
+        console.error('Error en la petición:', error);
+        throw error; // Lanza el error para que el llamador lo maneje
+    }
 };
-
 
 
 export const createIrrigation = async (token: string, data: object) => {

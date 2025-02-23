@@ -125,18 +125,20 @@ const AddMoreDetailsAccount = () => {
   const dispatch = useDispatch();
   const progress = useSelector((state) => state.ui.progressBar);
 
+  const email = useSelector((state: any) => state.auth.CreateAccountData.email);
+  const password = useSelector((state: any) => state.auth.CreateAccountData.password);
+
   useEffect(() => {
     dispatch(advanceProgressBar(34));
-  }, []);
+  }, [dispatch]);
 
   const isValidDate = () => {
-    const parsedMonth = parseInt(month, 10); // Convertir a número
-    const date = new Date(year, parsedMonth - 1, day); // Mes en base 0
-    return date.getFullYear() == year && date.getMonth() + 1 == parsedMonth && date.getDate() == day;
+    const parsedMonth = parseInt(month, 10);
+    const date = new Date(year, parsedMonth - 1, day);
+    return date.getFullYear() === parseInt(year) && date.getMonth() + 1 === parsedMonth && date.getDate() === parseInt(day);
   };
 
-
-  const handleNext = () => {
+  const handleNext = async () => {
     if (!day || !month || !year || !zip_code) {
       Alert.alert('Error', 'Por favor, completa todos los campos.');
       return;
@@ -149,20 +151,20 @@ const AddMoreDetailsAccount = () => {
       Alert.alert('Error', 'El código postal debe tener 5 dígitos numéricos.');
       return;
     }
-    const birthdate = `${day}-${month}-${year}`
-    dispatch(setCreateAccountData({ birthdate, zip_code })); // Solo actualiza email y password
+    const birthdate = `${year}-${month}-${day}`;
+    dispatch(setCreateAccountData({ birthdate, zip_code }));
     dispatch(changeToEnglishGender());
-    dispatch(createUserThunk());
 
-    const email = useSelector((state: any) => state.auth.CreateAccountData.email);
-    const password = useSelector((state: any) => state.auth.CreateAccountData.password);
-    dispatch(postCredentials({
-      email: email,
-      password: password,
-    }));  
-    dispatch(clearCreateAccountData)
-
-    navigation.navigate('Bar');
+    // Llamada a createUserThunk() de forma correcta
+    try {
+      await dispatch(createUserThunk()); // Aquí usamos 'await' porque createUserThunk es un 'thunk' asíncrono.
+      await dispatch(postCredentials({ email, password }));
+      dispatch(clearCreateAccountData());
+      navigation.navigate('Bar');
+    } catch (error) {
+      console.error('Error al crear el usuario:', error);
+      Alert.alert('Error', 'Hubo un problema al crear tu cuenta. Inténtalo de nuevo.');
+    }
   };
 
   return (

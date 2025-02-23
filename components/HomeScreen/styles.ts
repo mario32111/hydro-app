@@ -1,6 +1,18 @@
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
+    noDataContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 20,
+    },
+    noDataText: {
+        fontSize: 16,
+        color: 'gray',
+        textAlign: 'center',
+        marginBlockStart:30
+    },
     logo: {
         width: 50,
         height: 50,

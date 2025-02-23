@@ -51,7 +51,6 @@ export const postCredentials = createAsyncThunk(
             dispatch(setLoading(true)); // Inicia la carga
 
             const LoginRes = await login(data); // Espera la respuesta de login
-
             if (LoginRes?.token) { // Verifica si hay token en la respuesta
                 dispatch(setLoged({ loged: true })); // Debe ser un objeto
 

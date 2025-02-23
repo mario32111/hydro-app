@@ -11,6 +11,7 @@ import AddMoreDetailsAccount from '@/components/createAccountScreen/AddMoreDetai
 import { retrocedeProgressBar } from '@/redux/slices/uiSlice';
 import { useDispatch } from 'react-redux';
 import { createStackNavigator } from '@react-navigation/stack';
+import QRCodeScannerScreen from '@/components/QRCodeScannerScreen';
 
 const Stack = createStackNavigator();
 
@@ -65,6 +66,9 @@ const RootComponent: React.FC = () => {
           component={IrrigationDetailsScreen}
           options={{ headerShown: true }}
         />
+
+      <Stack.Screen name="QR" component={QRCodeScannerScreen} options={{ headerShown: true }} />
+
       </Stack.Navigator>
     );
   };
