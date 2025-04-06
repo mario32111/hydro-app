@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-const url = ' http://192.168.1.73:3000/api/v1/auth/login'; // URL de la API
-const url2 = 'http://192.168.1.73:3000/api/v1/users/'
-const url3 = 'http://192.168.1.73:3000/api/v1/users/check-email?email=';
+const url = ' http://107.21.152.83:443/api/v1/auth/login'; // URL de la API
+const url2 = 'http://107.21.152.83:443/api/v1/users/'
+const url3 = 'http://107.21.152.83:443/api/v1/users/check-email?email=';
 /* const data = {
     email: 'usuario@example.com',
     password: 'TuContraseñaSegura',

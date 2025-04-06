@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { createIrrigation, getIrrigation, getIrrigations } from "../../api/irrigateApi";
+import { createIrrigation, getIrrigation, getIrrigations, toggleFaucetService } from "../../api/irrigateApi";
 import { setLoading } from "./uiSlice";
 
 // Estado inicial del slice
@@ -23,6 +23,28 @@ export const fetchIrrigationDetailed = createAsyncThunk(
       console.error(error);
     } finally {
       dispatch(setLoading(false)); // Finaliza el estado de carga
+    }
+  }
+);
+
+export const toggleFaucet = createAsyncThunk(
+  'data/toggleFaucet',
+  async (valveState: boolean, { dispatch, getState }) => {
+    const state = getState();
+
+    dispatch(setLoading(true));
+    try {
+      const response = await toggleFaucetService({
+        topic: 'llave/config',
+        message: valveState ? 'abrir' : 'cerrar'
+      });
+      
+      return response;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    } finally {
+      dispatch(setLoading(false));
     }
   }
 );

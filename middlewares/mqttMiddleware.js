@@ -2,7 +2,7 @@ import { messageReceived } from "../redux/slices/mqttSlice";
 import { Client } from 'paho-mqtt';
 const options = {
     clientId: 'your_client_id',
-    host: '192.168.1.73',  // Solo la dirección IP
+    host: '107.21.152.83',  // Solo la dirección IP
     port: 8000,             // Puerto WebSocket
 };
 
@@ -20,7 +20,7 @@ const mqttMiddleware = store => next => action => {
             client.connect({
                 onSuccess: () => {
                     console.log("Conectado al broker MQTT");
-                    client.subscribe("sensor/temperature", { qos: 1 });
+                    client.subscribe("llave/datos", { qos: 1 });
                 },
                 onFailure: (err) => {
                     console.error("Error al conectar:", err);
