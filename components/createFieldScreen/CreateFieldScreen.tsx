@@ -6,7 +6,7 @@ import {
     ScrollView,
     TouchableOpacity,
 } from 'react-native';
-import { Checkbox } from 'react-native-paper';
+import { Checkbox } from 'expo-checkbox';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Picker } from '@react-native-picker/picker';
 import IconModalForm from './IconModalForm';
@@ -59,7 +59,7 @@ const CreateFieldScreen: React.FC = () => {
             irrigation_cycle: irrigationCycle,
         };
 
-        dispatch(createNewIrrigation(data))        
+        dispatch(createNewIrrigation(data))
         alert('Campo creado exitosamente');
         navigation.navigate('Bar');
     };
@@ -139,8 +139,8 @@ const CreateFieldScreen: React.FC = () => {
 
             <View style={styles.checkboxContainer}>
                 <Checkbox
-                    status={nightIrrigation ? 'checked' : 'unchecked'}
-                    onPress={() => setNightIrrigation(!nightIrrigation)}
+                    value={nightIrrigation}
+                    onValueChange={setNightIrrigation}
                     color="rgb(147,194,26)"
                 />
                 <Text style={styles.checkboxLabel}>Habilitar riego por la noche</Text>
